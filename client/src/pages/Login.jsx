@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 import { useState } from 'react'
-import axios from 'axios'
+// ĐÃ SỬA: Import biến API từ file cấu hình api.js thay vì dùng axios gốc
+import API from '../api' 
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
@@ -14,24 +15,18 @@ export default function Login() {
     const login = async () => {
 
         if (!phone || !password) {
-
             alert('Nhập đầy đủ thông tin')
-
             return
-
         }
 
         try {
-
             setLoading(true)
 
-            const res = await axios.post(
-                'http://localhost:5000/api/auth/login',
-                {
-                    phone,
-                    password
-                }
-            )
+            // ĐÃ SỬA: Chuyển đổi từ axios.post sang API.post và rút gọn endpoint
+            const res = await API.post('/auth/login', {
+                phone,
+                password
+            })
 
             localStorage.setItem(
                 'token',
@@ -39,25 +34,17 @@ export default function Login() {
             )
 
             setLoading(false)
-
             toast.success('Login successful')
-
             navigate('/dashboard')
 
         } catch (err) {
-
             setLoading(false)
-
             console.log(err)
-
             toast.error('Invalid credentials')
-
         }
-
     }
 
     return (
-
         <div style={{
             background: '#020617',
             minHeight: '100vh',
@@ -69,10 +56,7 @@ export default function Login() {
             justifyContent: 'center'
         }}>
 
-            <div style={{
-                marginBottom: '40px'
-            }}>
-
+            <div style={{ marginBottom: '40px' }}>
                 <h1 style={{
                     fontSize: '42px',
                     fontWeight: 'bold',
@@ -80,14 +64,12 @@ export default function Login() {
                 }}>
                     Kingston
                 </h1>
-
                 <p style={{
                     color: '#94a3b8',
                     fontSize: '16px'
                 }}>
                     Welcome back to your wallet
                 </p>
-
             </div>
 
             <input
@@ -148,26 +130,16 @@ export default function Login() {
                     cursor: 'pointer'
                 }}
             >
-
-                {
-                    loading
-                        ? 'Loading...'
-                        : 'Login'
-                }
-
+                {loading ? 'Loading...' : 'Login'}
             </button>
 
             <div style={{
                 textAlign: 'center',
                 marginTop: '25px'
             }}>
-
-                <p style={{
-                    color: '#94a3b8'
-                }}>
+                <p style={{ color: '#94a3b8' }}>
                     Secure Crypto Wallet
                 </p>
-
                 <p
                     onClick={() => navigate('/register')}
                     style={{
@@ -179,11 +151,7 @@ export default function Login() {
                 >
                     Create New Account
                 </p>
-
             </div>
-
         </div>
-
     )
-
 }

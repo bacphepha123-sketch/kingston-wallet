@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import axios from 'axios'
+// ĐÃ SỬA: Import biến API từ file cấu hình api.js thay vì dùng axios gốc
+import API from '../api' 
 import { useNavigate } from 'react-router-dom'
 
 export default function Register() {
@@ -14,46 +15,32 @@ export default function Register() {
     const register = async () => {
 
         if (!name || !phone || !password) {
-
             alert('Nhập đầy đủ thông tin')
-
             return
-
         }
 
         try {
-
             setLoading(true)
 
-            await axios.post(
-                'http://localhost:5000/api/auth/register',
-                {
-                    name,
-                    phone,
-                    password
-                }
-            )
+            // ĐÃ SỬA: Chuyển đổi từ axios.post sang API.post và dùng endpoint ngắn gọn
+            await API.post('/auth/register', {
+                name,
+                phone,
+                password
+            })
 
             setLoading(false)
-
             alert('Đăng ký thành công')
-
             navigate('/login')
 
         } catch (err) {
-
             setLoading(false)
-
             console.log(err)
-
             alert('Đăng ký thất bại')
-
         }
-
     }
 
     return (
-
         <div style={{
             background: '#020617',
             minHeight: '100vh',
@@ -65,10 +52,7 @@ export default function Register() {
             justifyContent: 'center'
         }}>
 
-            <div style={{
-                marginBottom: '40px'
-            }}>
-
+            <div style={{ marginBottom: '40px' }}>
                 <h1 style={{
                     fontSize: '42px',
                     fontWeight: 'bold',
@@ -76,13 +60,9 @@ export default function Register() {
                 }}>
                     Create Account
                 </h1>
-
-                <p style={{
-                    color: '#94a3b8'
-                }}>
+                <p style={{ color: '#94a3b8' }}>
                     Join Kingston Wallet
                 </p>
-
             </div>
 
             <input
@@ -157,26 +137,16 @@ export default function Register() {
                     cursor: 'pointer'
                 }}
             >
-
-                {
-                    loading
-                        ? 'Loading...'
-                        : 'Create Account'
-                }
-
+                {loading ? 'Loading...' : 'Create Account'}
             </button>
 
             <div style={{
                 textAlign: 'center',
                 marginTop: '25px'
             }}>
-
-                <p style={{
-                    color: '#94a3b8'
-                }}>
+                <p style={{ color: '#94a3b8' }}>
                     Already have account?
                 </p>
-
                 <p
                     onClick={() => navigate('/login')}
                     style={{
@@ -188,11 +158,7 @@ export default function Register() {
                 >
                     Login Here
                 </p>
-
             </div>
-
         </div>
-
     )
-
 }
