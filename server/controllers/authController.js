@@ -1,49 +1,68 @@
-import User from '../models/User.js'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+const User = require('../models/User');
 
-export const register = async (req, res) => {
-
+const register = async (req, res) => {
     try {
+        const { name, phone, password } = req.body;
 
-        const { name, phone, password } = req.body
+        const userExists = await User.findOne({ phone });
 
-        const exist = await User.findOne({ phone })
-
-        if (exist) {
+        if (userExists) {
             return res.status(400).json({
-                message: 'Phone already exists'
-            })
+                message: 'User already exists'
+            });
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10)
 
         const user = await User.create({
             name,
             phone,
-            password: hashedPassword,
-            balance: 0
-        })
+            password
+        });
 
-        const token = jwt.sign(
-            { id: user._id },
-            'kingstonsecret',
-            { expiresIn: '7d' }
-        )
+        res.status(201).json({
+            _id: user._id,
+            name: user.name,
+            phone: user.phone
+        });
 
-        res.json({
-            token,
-            user
-        })
-
-    } catch (err) {
-
-        console.log(err)
-
+    } catch (error) {
         res.status(500).json({
             message: 'Register failed'
-        })
-
+        });
     }
+};
 
-}
+const login = async (req, res) => {
+    try {
+        const { phone, password } = req.body;
+
+        const user = await User.findOne({ phone });
+
+        if (!user) {
+            return res.status(400).json({
+                message: 'User not found'
+            });
+        }
+
+        if (user.password !== password) {
+            return res.status(400).json({
+                message: 'Wrong password'
+            });
+        }
+
+        res.json({
+            _id: user._id,
+            name: user.name,
+            phone: user.phone
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Login failed'
+        });
+    }
+};
+
+module.exports = {
+    register,
+    login
+};
