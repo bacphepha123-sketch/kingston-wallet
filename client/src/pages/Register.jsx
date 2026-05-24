@@ -36,7 +36,9 @@ export default function Register() {
         } catch (err) {
             setLoading(false)
             console.log(err)
-            alert('Đăng ký thất bại')
+            alert(err.response?.data?.message || err.message)
+console.log(err.response?.data)
+console.log(err)
         }
     }
 
